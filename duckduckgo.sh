@@ -30,14 +30,14 @@ done
 function search {
         echo "Searching for \"$1\"..." > /dev/tty
         for i in {1..5}; do
-                html=$(pc curl -A "$UA" -s 'https://duckduckgo.com/?q='$(urlencode "$1")'&t=hx&va=g')
+                html=$(curl -A "$UA" -s 'https://duckduckgo.com/?q='$(urlencode "$1")'&t=hx&va=g')
                 [ ${#html} -gt 0 ] && break || return 1
         done
 
         link=$(sed 's/;/\n/g' <<< "$html" | grep 'initialize' | sed "s/')//g" | sed 's/.*\//https:\/\/links.duckduckgo.com\//g')
         link=$(sed -r 's/&s=[0-9]{1,}&/\&s='$page'\&/g' <<< "$link")
         for i in {1..5};do
-                data=$(pc curl -A "$UA" -s "$link")
+                data=$(curl -A "$UA" -s "$link")
                 [ ${#data} -gt 0 ] && { echo "$data"; break; } || return 1
         done
 }
